@@ -24,10 +24,7 @@ public class Alarm : MonoBehaviour
     private AudioSource _audioSource;
     private Animator _animator;
 
-    private IntruderChecker _intruderChecker;
-
     private float _volumeUnit = 0.1f;
-    private float _minVolume = 0.001f;
 
     private void Start()
     {
@@ -35,25 +32,27 @@ public class Alarm : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
     }
 
-    private IEnumerator ChangeVolume()
+    public IEnumerator TurnOnAlarm()
     {
         var waitForSeconds = new WaitForSeconds(1);
-        _audioSource.volume += _minVolume;
+        _animator.SetBool(AnimatorHome.Params.IsIntruderInside, true);
+
+        while (_audioSource.volume != 1)
+        {
+            _audioSource.volume += _volumeUnit;
+            yield return waitForSeconds;
+        }
+    }
+
+    public IEnumerator TurnOffAlarm()
+    {
+        var waitForSeconds = new WaitForSeconds(1);
 
         while (_audioSource.volume != 0)
         {
-            if (_intruderChecker.IsAlarmOn == true)
-            {
-                _audioSource.volume += _volumeUnit;
-            }
-            else
-            {
-                _audioSource.volume -= _volumeUnit;
-            }
-
+            _audioSource.volume -= _volumeUnit;
             yield return waitForSeconds;
         }
-
         _animator.SetBool(AnimatorHome.Params.IsIntruderInside, false);
     }
 }
