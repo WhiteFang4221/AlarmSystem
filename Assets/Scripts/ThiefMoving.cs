@@ -22,7 +22,6 @@ public static class AnimatorThiefController
 
 public class ThiefMoving : MonoBehaviour
 {
-
     [SerializeField] private CircleCollider2D _targetCollider;
     [SerializeField] private float _speed;
 
@@ -59,12 +58,11 @@ public class ThiefMoving : MonoBehaviour
         {
             GetInHouse();
         }
-        else if (collision.TryGetComponent<Exit>(out Exit exit))
+        else if (collision.TryGetComponent<FinishPoint>(out FinishPoint finishPoint))
         {
             StopMoving();
         }
     }
-
 
     private void GetInHouse()
     {

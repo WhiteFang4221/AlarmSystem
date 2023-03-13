@@ -17,48 +17,32 @@ public static class AnimatorHome
     }
 }
 
-public class AlarmSystem : MonoBehaviour
+public class Alarm : MonoBehaviour
 {
     [SerializeField] private UnityEvent _invasion;
 
     private AudioSource _audioSource;
     private Animator _animator;
 
-    private float _volumeUnit = 0.1f;
+    private IntruderChecker _intruderChecker;
 
-    public bool IsAlarmOn { get; private set; }
+    private float _volumeUnit = 0.1f;
+    private float _minVolume = 0.001f;
 
     private void Start()
-
     {
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.TryGetComponent<Thief>(out Thief thief))
-        {
-            IsAlarmOn = true;
-            _invasion?.Invoke();
-            _animator.SetBool(AnimatorHome.Params.IsIntruderInside, true);
-            StartCoroutine(ChangeVolume());
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        IsAlarmOn = false;
-    }
-
     private IEnumerator ChangeVolume()
     {
         var waitForSeconds = new WaitForSeconds(1);
-        _audioSource.volume += _volumeUnit;
+        _audioSource.volume += _minVolume;
 
         while (_audioSource.volume != 0)
         {
-            if (IsAlarmOn == true)
+            if (_intruderChecker.IsAlarmOn == true)
             {
                 _audioSource.volume += _volumeUnit;
             }
