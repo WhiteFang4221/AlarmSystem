@@ -1,23 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class IntruderChecker : MonoBehaviour
 {
-    //private Alarm _alarm;
-    public bool IsAlarmOn { get; private set; }
+    public static Action Penetration;
+    public static Action IntruderIsGone;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.TryGetComponent<Thief>(out Thief thief))
         {
-            IsAlarmOn = true;
+            Penetration?.Invoke();
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        IsAlarmOn = false;
-        //_alarm.StartCoroutine(ChangeVolume)
+        IntruderIsGone?.Invoke();
     }
 }

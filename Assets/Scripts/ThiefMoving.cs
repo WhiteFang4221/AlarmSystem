@@ -26,7 +26,6 @@ public class ThiefMoving : MonoBehaviour
     [SerializeField] private float _speed;
 
     private Animator _animator;
-    private bool _isInHome = false;
 
     private void Awake()
     {
@@ -44,12 +43,6 @@ public class ThiefMoving : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, _targetCollider.transform.position, _speed * Time.deltaTime);
         }
-
-        if (_isInHome == true)
-        {
-            StopMoving();
-            Invoke("GetOutHouse", 5);
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -66,14 +59,12 @@ public class ThiefMoving : MonoBehaviour
 
     private void GetInHouse()
     {
-        _isInHome = true;
-
         StopMoving();
+        Invoke("GetOutHouse", 5);
     }
 
     private void GetOutHouse()
     {
-        _isInHome= false;
         StartMoving();
     }
 
