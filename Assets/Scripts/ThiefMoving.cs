@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-[RequireComponent(typeof(Transform))]
+[RequireComponent(typeof(Animator))]
 
 public static class AnimatorThiefController
 {
