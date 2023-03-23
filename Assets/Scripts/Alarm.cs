@@ -1,8 +1,11 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
+[RequireComponent(typeof(Animator), typeof(AudioSource))]
 
 public static class AnimatorHome
 {
@@ -20,75 +23,55 @@ public static class AnimatorHome
 
 public class Alarm : MonoBehaviour
 {
-    [SerializeField] private UnityEvent _invasion;
-    [SerializeField] private UnityEvent _invasionIsOver;
+    private Home _home;
 
     private AudioSource _audioSource;
 
     private Animator _animator;
 
-    private float _volumeUnit = 0.1f;
-
-    private Coroutine _shutdownRoutine;
+    private Coroutine _volumeChangerRoutine;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
+        _home = GetComponent<Home>();
 
-        IntruderChecker.Penetration += SwitchAlarmActivation;
-        IntruderChecker.IntruderIsGone += SwitchOffAlarm;
+        _home.StateChanged += OnStateChanged;
     }
 
     private void OnDestroy()
     {
-        IntruderChecker.Penetration -= SwitchAlarmActivation;
-        IntruderChecker.IntruderIsGone -= SwitchOffAlarm;
+        _home.StateChanged -= OnStateChanged;
     }
 
-    private void SwitchAlarmActivation()
+    private void OnStateChanged(float targetVolume)
     {
-        if (_shutdownRoutine!= null)
+        if (_volumeChangerRoutine!= null)
         {
-            StopCoroutine(_shutdownRoutine);
+            StopCoroutine(_volumeChangerRoutine); 
         }
-        
-        _shutdownRoutine = StartCoroutine(TurnOnAlarm());
+        _volumeChangerRoutine = StartCoroutine(ChangeAlarmState(targetVolume));
     }
 
-    private void SwitchOffAlarm()
+    private IEnumerator ChangeAlarmState(float targetVolume)
     {
-        if (_shutdownRoutine != null)
+        if (targetVolume != 0)
         {
-            StopCoroutine(_shutdownRoutine);
+            _animator.SetBool(AnimatorHome.Params.IsIntruderInside, true);
+            _audioSource.Play();
         }
 
-        _shutdownRoutine = StartCoroutine(TurnOffAlarm());
-    }
-
-    private IEnumerator TurnOnAlarm()
-    {
-        var waitForSeconds = new WaitForSeconds(1);
-        _animator.SetBool(AnimatorHome.Params.IsIntruderInside, true);
-        _invasion?.Invoke();
-
-        while (_audioSource.volume != 1)
+        while(_audioSource.volume != targetVolume)
         {
-            _audioSource.volume += _volumeUnit;
-            yield return waitForSeconds;
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, Time.deltaTime * 0.2f);
+            yield return null;
         }
-    }
 
-    private IEnumerator TurnOffAlarm()
-    {
-        var waitForSeconds = new WaitForSeconds(1);
-
-        while (_audioSource.volume != 0)
+        if (targetVolume == 0)
         {
-            _audioSource.volume -= _volumeUnit;
-            yield return waitForSeconds;
+            _animator.SetBool(AnimatorHome.Params.IsIntruderInside, false);
+            _audioSource.Stop();
         }
-        _animator.SetBool(AnimatorHome.Params.IsIntruderInside, false);
-        _invasionIsOver?.Invoke();
     }
 }

@@ -134,7 +134,6 @@ GameObject:
   - component: {fileID: 62343736}
   - component: {fileID: 62343735}
   - component: {fileID: 62343741}
-  - component: {fileID: 62343743}
   - component: {fileID: 62343742}
   - component: {fileID: 62343739}
   - component: {fileID: 62343738}
@@ -393,18 +392,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &62343743
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 62343734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 332e98d90cee21c48960220e48134875, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _invasionIsOver:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 62343738}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &144538105
 GameObject:
   m_ObjectHideFlags: 0

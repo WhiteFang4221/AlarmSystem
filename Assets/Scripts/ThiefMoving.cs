@@ -27,6 +27,8 @@ public class ThiefMoving : MonoBehaviour
 
     private Animator _animator;
 
+    private int _delayFunction = 5;
+
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -60,7 +62,7 @@ public class ThiefMoving : MonoBehaviour
     private void GetInHouse()
     {
         StopMoving();
-        Invoke("GetOutHouse", 5);
+        Invoke("GetOutHouse", _delayFunction);
     }
 
     private void GetOutHouse()
