@@ -31,6 +31,8 @@ public class Alarm : MonoBehaviour
 
     private Coroutine _volumeChangerRoutine;
 
+    private float _volumeSpeedChange = 0.2f;
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
@@ -64,7 +66,7 @@ public class Alarm : MonoBehaviour
 
         while(_audioSource.volume != targetVolume)
         {
-            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, Time.deltaTime * 0.2f);
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, targetVolume, Time.deltaTime * _volumeSpeedChange);
             yield return null;
         }
 
